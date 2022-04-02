@@ -1,6 +1,16 @@
-# Neovim from scratch
+# Neovim config
 
-Open `nvim` and enter the following:
+## Installation
+
+To install use:
+
+```
+git clone git@github.com:svitaly/nvimconfig.git ~/.config/nvim
+```
+
+Run `nvim` and see the `packer` and the plugings being installed.
+
+Check everything is running correctly:
 
 ```
 :checkhealth
@@ -26,7 +36,7 @@ To make all keymaps work on Mac OS, open System Preferences > Keyboard > Shortcu
 
 ## Preffered font settings
 
-Use fonds that are patched with nerd font icons. Link for reference [Nerd Fonds](https://www.nerdfonts.com/font-downloads)
+Use fonts that are patched with nerd font icons. Link for reference [Nerd Fonds](https://www.nerdfonts.com/font-downloads)
 
 On Mac OS install:
 
@@ -34,5 +44,12 @@ On Mac OS install:
 brew tap homebrew/cask-fonts &&
 brew install --cask font-<FONT NAME>-nerd-font
 ```
-
 where `<FONT NAME>` is the font name. Preffered are: `iosevka`, `jetbrains-mono`.
+
+## Etcetera
+
+Nvim configurations files are in `.config/nvim`.
+
+All downloaded stuff like plugins is saved to `.local/share/nvim`.
+
+Delete both this folders to strip down nvim back to defaults.
