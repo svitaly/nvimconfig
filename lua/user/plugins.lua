@@ -50,10 +50,10 @@ return packer.startup(function(use)
   use "numToStr/Comment.nvim" -- Easily comment stuff
   use "kyazdani42/nvim-web-devicons"
   use "kyazdani42/nvim-tree.lua"
-  use "akinsho/bufferline.nvim"
+  use {'akinsho/bufferline.nvim', tag = "v2.*", requires = 'kyazdani42/nvim-web-devicons'}
   use "moll/vim-bbye" -- delete buffers (close files) without closing windows
   use "nvim-lualine/lualine.nvim"
-  use "akinsho/toggleterm.nvim"
+  use {"akinsho/toggleterm.nvim", tag = 'v2.*'}
   use "ahmedkhalf/project.nvim"
   use "lewis6991/impatient.nvim" -- Speed up loading Lua modules to improve startup time
   use "lukas-reineke/indent-blankline.nvim"
