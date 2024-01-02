@@ -4,9 +4,7 @@
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
--- [[ Install `lazy.nvim` plugin manager ]]
---    https://github.com/folke/lazy.nvim
---    `:help lazy.nvim.txt` for more info
+-- [[ `lazy.nvim` plugin manager ]] `:help lazy.nvim.txt` for more info
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system {
@@ -21,13 +19,8 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 -- [[ Configure plugins ]]
--- NOTE: Here is where you install your plugins.
 --  You can configure plugins using the `config` key.
---
---  You can also configure plugins after the setup call,
---    as they will be available in your neovim runtime.
 require('lazy').setup({
-  -- Git related plugins
   {
     'tpope/vim-fugitive',
     config = function()
@@ -156,40 +149,40 @@ require('lazy').setup({
   },
   -- Colorschemes:
   {
-    'navarasu/onedark.nvim',
+    'Mofiqul/dracula.nvim',
     priority = 1000,
+    name = 'dracula',
     config = function()
-      vim.cmd.colorscheme 'onedark'
+      vim.cmd.colorscheme 'dracula'
     end,
   },
-  { 'Mofiqul/dracula.nvim', name = 'dracula', priority = 1000, },
-
   {
-    -- Set lualine as statusline
+    -- Set lualine as statusline - See `:help lualine.txt`
     'nvim-lualine/lualine.nvim',
-    -- See `:help lualine.txt`
     opts = {
       options = {
-        icons_enabled = false,
-        theme = 'onedark',
+        icons_enabled = true,
+        theme = 'dracula',
         component_separators = '|',
         section_separators = '',
       },
     },
   },
-
   {
     -- Add indentation guides even on blank lines
     'lukas-reineke/indent-blankline.nvim',
-    -- Enable `lukas-reineke/indent-blankline.nvim`
-    -- See `:help ibl`
+    -- Enable `lukas-reineke/indent-blankline.nvim` - See `:help ibl`
     main = 'ibl',
     opts = {},
   },
-
-  -- "gc" to comment visual regions/lines
-  { 'numToStr/Comment.nvim', opts = {} },
-
+  {
+    'numToStr/Comment.nvim',
+    opts = {},
+    config = function()
+      vim.keymap.set("n", "<leader>/", function() require("Comment.api").toggle.linewise.count(vim.v.count > 0 and vim.v.count or 1) end)
+      vim.keymap.set("v", "<leader>/", "<esc><cmd>lua require('Comment.api').toggle.linewise(vim.fn.visualmode())<cr>")
+    end,
+  },
   -- Fuzzy Finder (files, lsp, etc)
   {
     'nvim-telescope/telescope.nvim',
@@ -238,66 +231,50 @@ require('lazy').setup({
 
 -- [[ Setting options ]]
 -- See `:help vim.o`
--- NOTE: You can change these options as you wish!
 
 -- Set highlight on search
 vim.o.hlsearch = true
-
 -- Make line numbers default
 vim.wo.relativenumber = true
-
 -- Enable mouse mode
 vim.o.mouse = 'a'
-
--- Sync clipboard between OS and Neovim.
---  Remove this option if you want your OS clipboard to remain independent.
---  See `:help 'clipboard'`
+-- Sync clipboard between OS and Neovim. See `:help 'clipboard'`
 vim.o.clipboard = 'unnamedplus'
-
 -- Enable break indent
 vim.o.breakindent = true
-
 -- Save undo history
 vim.o.undofile = true
 vim.o.undodir = os.getenv("HOME") .. "/.vim/undodir"
-
 vim.o.ignorecase = true
 -- Case-insensitive searching UNLESS \C or capital in search
 -- vim.o.smartcase = true
-
 -- Keep signcolumn on by default
 vim.wo.signcolumn = 'yes'
-
 -- Decrease update time
 vim.o.updatetime = 250
 vim.o.timeoutlen = 300
-
 -- Set completeopt to have a better completion experience
 vim.o.completeopt = 'menuone,noselect'
-
--- NOTE: You should make sure your terminal supports this
 vim.o.termguicolors = true
-
 vim.o.colorcolumn = "80"
 vim.o.listchars = 'eol:'
+-- Enable list chars with:
 -- vim.opt.list = true
-
 vim.o.laststatus = 3
 -- implement borders for splits:
 vim.cmd[[highlight WinSeparator guibg=None]]
 -- same as :highligth WinSeparator guibg=None
 
--- Keymaps for better default experience
--- See `:help vim.keymap.set()`
+-- Keymaps for better default experience See `:help vim.keymap.set()`
 vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 vim.keymap.set("i", "<C-c>", "<Esc>")
 vim.keymap.set("n", "Q", "<nop>")
 
-vim.keymap.set("n", "<leader>c", ":bdelete<CR>") -- Close buffer
 
 -- fileexplorer -- based on Telescope
 -- vim.keymap.set("n", "<leader>e", vim.cmd.Ex) -- default explorer
 vim.keymap.set("n", "<leader>e", ":Telescope file_browser path=%:p:h select_buffer=true<CR><Esc>")
+vim.keymap.set("n", "<leader>c", ":bdelete<CR>") -- Close buffer
 
 -- Remap for dealing with word wrap
 vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
@@ -330,14 +307,9 @@ local function set_indent()
     vim.bo.shiftwidth = indent -- local to buffer
   end
 end
-
 vim.keymap.set("n", "<leader>ui", set_indent)
 
--- Comment and uncomment using Comment.nvim
-vim.keymap.set("n", "<leader>/", function() require("Comment.api").toggle.linewise.count(vim.v.count > 0 and vim.v.count or 1) end)
-vim.keymap.set("v", "<leader>/", "<esc><cmd>lua require('Comment.api').toggle.linewise(vim.fn.visualmode())<cr>")
-
--- windows controls
+-- window controls
 vim.keymap.set("n", "|", "<CMD>vsplit<CR>")
 vim.keymap.set("n", "\\", "<CMD>split<CR>")
 vim.keymap.set("n", "<C-h>", "<C-w>h")
@@ -349,8 +321,7 @@ vim.keymap.set("n", "<C-Down>", "<cmd>resize +2<CR>")
 vim.keymap.set("n", "<C-Left>", "<cmd>vertical resize -2<CR>")
 vim.keymap.set("n", "<C-Right>", "<cmd>vertical resize +2<CR>")
 
--- [[ Highlight on yank ]]
--- See `:help vim.highlight.on_yank()`
+-- [[ Highlight on yank ]] See `:help vim.highlight.on_yank()`
 local highlight_group = vim.api.nvim_create_augroup('YankHighlight', { clear = true })
 vim.api.nvim_create_autocmd('TextYankPost', {
   callback = function()
@@ -359,7 +330,6 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   group = highlight_group,
   pattern = '*',
 })
-
 vim.keymap.set("n", "<leader>h", ":nohl<CR>") -- toggle highliting
 
 -- [[ Configure Telescope ]]
@@ -373,9 +343,7 @@ require('telescope').setup {
         ["<C-j>"] = actions.move_selection_next,
         ["<C-k>"] = actions.move_selection_previous,
       },
-      n = {
-        q = actions.close,
-      },
+      n = { q = actions.close },
     },
   },
   extensions = {
@@ -386,9 +354,7 @@ require('telescope').setup {
     file_browser = {
       theme = "ivy",
       layout_strategy = 'bottom_pane',
-      layout_config = {
-        height = 40,
-      },
+      layout_config = { height = 40, },
       prompt_title = 'File browser',
       cwd_to_path = true,
       prompt_path = true,
@@ -399,10 +365,7 @@ require('telescope').setup {
       hijack_netrw = true,
       initial_mode = 'normal',
       prompt_prefix = '> ',
-      mappings = {
-        ["i"] = { },
-        ["n"] = { },
-      },
+      mappings = { ["i"] = { }, ["n"] = { }, },
     },
   },
 }
@@ -476,13 +439,12 @@ vim.keymap.set('n', '<leader>sG', ':LiveGrepGitRoot<cr>', { desc = '[S]earch by 
 vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
 vim.keymap.set('n', '<leader>fr', require('telescope.builtin').resume, { desc = '[S]earch [R]esume' })
 
--- [[ Configure Treesitter ]]
--- See `:help nvim-treesitter`
+-- [[ Configure Treesitter ]] See `:help nvim-treesitter`
 -- Defer Treesitter setup after first render to improve startup time of 'nvim {filename}'
 vim.defer_fn(function()
   require('nvim-treesitter.configs').setup {
     -- Add languages to be installed here that you want installed for treesitter
-    ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'javascript', 'typescript', 'vimdoc', 'vim', 'bash' },
+    ensure_installed = { 'lua', 'python', 'tsx', 'javascript', 'typescript', 'vimdoc', 'vim', 'bash' },
 
     -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
     auto_install = true,
@@ -548,11 +510,7 @@ end, 0)
 -- [[ Configure LSP ]]
 --  This function gets run when an LSP connects to a particular buffer.
 local on_attach = function(_, bufnr)
-  -- NOTE: Remember that lua is a real programming language, and as such it is possible
-  -- to define small helper and utility functions so you don't have to repeat yourself
-  -- many times.
-  --
-  -- In this case, we create a function that lets us more easily define mappings specific
+  -- create a function that lets us more easily define mappings specific
   -- for LSP related items. It sets the mode, buffer and description for us each time.
   local nmap = function(keys, func, desc)
     if desc then
@@ -665,8 +623,7 @@ mason_lspconfig.setup_handlers {
   end,
 }
 
--- [[ Configure nvim-cmp ]]
--- See `:help cmp`
+-- [[ Configure nvim-cmp ]] See `:help cmp`
 local cmp = require 'cmp'
 local luasnip = require 'luasnip'
 require('luasnip.loaders.from_vscode').lazy_load()
